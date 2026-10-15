@@ -1,0 +1,37 @@
+@page "/users"
+@using BlazorUsersJsonPlaceHolderApi.Models
+@inject HttpClient Http
+
+<h3>Usuários</h3>
+
+@if (users is null)
+{
+    <p>Carregando...</p>
+}
+else
+{
+    <ul>
+        @foreach (var u in users)
+        {
+            <li>@u.Name - @u.Address.City - @u.Company.Name</li>
+        }
+    </ul>
+}
+
+@code {
+    private List<User>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        users = await Http.GetFromJsonAsync<List<User>>("users");
+
+        if (users is not null && users.Count > 0)
+        {
+            var primeiro = users[0];
+
+            Console.WriteLine($"Nome: {primeiro.Name}");
+            Console.WriteLine($"Cidade: {primeiro.Address.City}");
+            Console.WriteLine($"Empresa: {primeiro.Company.Name}");
+        }
+    }
+}
